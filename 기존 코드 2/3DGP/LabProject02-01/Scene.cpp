@@ -136,20 +136,28 @@ void CScene::Animate(float fElapsedTime)
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fElapsedTime);
 }
 
-void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
+void CScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	CGraphicsPipeline::SetViewport(&pCamera->m_Viewport);
+	// 1. 뷰포트 설정
+	CGraphicsPipeline::SetViewport(pd3dCommandList, &pCamera->m_Viewport);
 
-	CGraphicsPipeline::SetViewPerspectiveProjectTransform(&pCamera->m_xmf4x4ViewPerspectiveProject);
+	// 2. ViewProjection 행렬 설정
+	CGraphicsPipeline::SetViewPerspectiveProjectTransform(pd3dCommandList, &pCamera->m_xmf4x4ViewPerspectiveProject);
 
-	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
+	// 3. 모든 게임 오브젝트 렌더링
+	for (int i = 0; i < m_nObjects; i++)
+		m_ppObjects[i]->Render(pd3dCommandList, pCamera);
 
-	if (m_pPlayer) m_pPlayer->Render(hDCFrameBuffer, pCamera);
+	// 4. 플레이어 렌더링
+	if (m_pPlayer)
+		m_pPlayer->Render(pd3dCommandList, pCamera);
 
-//UI
 #ifdef _WITH_DRAW_AXIS
-	CGraphicsPipeline::SetViewOrthographicProjectTransform(&pCamera->m_xmf4x4ViewOrthographicProject);
+	// 5. UI용 투영행렬 설정
+	CGraphicsPipeline::SetViewOrthographicProjectTransform(pd3dCommandList, &pCamera->m_xmf4x4ViewOrthographicProject);
+
+	// 6. 월드 축 회전 설정 및 렌더
 	m_pWorldAxis->SetRotationTransform(&m_pPlayer->m_xmf4x4World);
-	m_pWorldAxis->Render(hDCFrameBuffer, pCamera);
+	m_pWorldAxis->Render(pd3dCommandList, pCamera);
 #endif
 }
