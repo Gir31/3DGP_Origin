@@ -75,9 +75,6 @@
     <ClInclude Include="3DGP_variableStage2.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGP.cpp">
@@ -125,9 +122,6 @@
     <ClCompile Include="Stage2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="3DGP.rc">
@@ -141,8 +135,5 @@
     <Image Include="3DGP.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shaders.hlsl" />
   </ItemGroup>
 </Project>

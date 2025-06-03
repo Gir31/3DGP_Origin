@@ -167,7 +167,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="Shader.h" />
     <ClInclude Include="Stage1.h" />
     <ClInclude Include="Stage2.h" />
     <ClInclude Include="StageManager.h" />
@@ -186,7 +185,6 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Stage1.cpp" />
     <ClCompile Include="Stage2.cpp" />
     <ClCompile Include="StageManager.cpp" />
@@ -202,9 +200,6 @@
   <ItemGroup>
     <Image Include="3DGP.ico" />
     <Image Include="small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shaders.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

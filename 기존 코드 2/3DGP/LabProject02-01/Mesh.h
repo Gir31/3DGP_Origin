@@ -1,66 +1,190 @@
-//------------------------------------------------------- ----------------------
-// File: Mesh.h
-//-----------------------------------------------------------------------------
-
 #pragma once
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CVertex
+{
+public:
+	CVertex() { m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f); }
+	CVertex(float x, float y, float z) { m_xmf3Position = XMFLOAT3(x, y, z); }
+	~CVertex() { }
+
+	XMFLOAT3					m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+};
+
+class CPolygon
+{
+public:
+	CPolygon() { }
+	CPolygon(int nVertices, COLORREF color);
+	~CPolygon();
+
+	int							m_nVertices = 0;
+	CVertex						*m_pVertices = NULL;
+	COLORREF					polygonColor = RGB(0, 0, 0); // ±âº»°ª: Èò»ö
+
+	void SetVertex(int nIndex, CVertex& vertex);
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 class CMesh
 {
 public:
-	CMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, char* pstrFileName = NULL);
+	CMesh() { }
+	CMesh(int nPolygons);
 	virtual ~CMesh();
 
 private:
-	int								m_nReferences = 0;
+	int							m_nReferences = 1;
 
 public:
 	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
-
-	void ReleaseUploadBuffers();
+	void Release() { m_nReferences--; if (m_nReferences <= 0) delete this; }
 
 protected:
-	UINT							m_nVertices = 0;
-	XMFLOAT3* m_pxmf3Positions = NULL;
-	ID3D12Resource* m_pd3dPositionBuffer = NULL;
-	ID3D12Resource* m_pd3dPositionUploadBuffer = NULL;
-
-	XMFLOAT3* m_pxmf3Normals = NULL;
-	ID3D12Resource* m_pd3dNormalBuffer = NULL;
-	ID3D12Resource* m_pd3dNormalUploadBuffer = NULL;
-
-	XMFLOAT2* m_pxmf2TextureCoords = NULL;
-	ID3D12Resource* m_pd3dTextureCoordBuffer = NULL;
-	ID3D12Resource* m_pd3dTextureCoordUploadBuffer = NULL;
-
-	UINT							m_nIndices = 0;
-	UINT* m_pnIndices = NULL;
-	ID3D12Resource* m_pd3dIndexBuffer = NULL;
-	ID3D12Resource* m_pd3dIndexUploadBuffer = NULL;
-
-	UINT							m_nVertexBufferViews = 0;
-	D3D12_VERTEX_BUFFER_VIEW* m_pd3dVertexBufferViews = NULL;
-
-	D3D12_INDEX_BUFFER_VIEW			m_d3dIndexBufferView;
-
-	D3D12_PRIMITIVE_TOPOLOGY		m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	UINT							m_nSlot = 0;
-	UINT							m_nStride = 0;
-	UINT							m_nOffset = 0;
-
-	UINT							m_nStartIndex = 0;
-	int								m_nBaseVertex = 0;
-
-	BoundingBox						m_xmBoundingBox;
+	int							m_nPolygons = 0;
+	CPolygon					**m_ppPolygons = NULL;
+	int							targetStage;
 
 public:
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList);
+	BoundingOrientedBox			m_xmOOBB = BoundingOrientedBox();
+	bool beSheild = false;
 
-	void LoadMeshFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, char* pstrFileName);
+public:
+	void SetPolygon(int nIndex, CPolygon *pPolygon);
 
-	BOOL RayIntersectionByTriangle(XMVECTOR& xmRayOrigin, XMVECTOR& xmRayDirection,
-		XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, float* pfHitDistance);
-	int CheckRayIntersection(XMVECTOR& xmRayOrigin, XMVECTOR& xmRayDirection, float* pfHitDistance);
+	virtual void Render(HDC hDCFrameBuffer);
+
+	BOOL RayIntersectionByTriangle(XMVECTOR& xmRayOrigin, XMVECTOR& xmRayDirection, XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, float* pfNearHitDistance);
+	int CheckRayIntersection(XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection, float* pfNearHitDistance);
+
+	int getTargetStage();
+};
+
+class CCubeMesh : public CMesh
+{
+public:
+	CCubeMesh(float fWidth = 4.0f, float fHeight = 4.0f, float fDepth = 4.0f);
+	virtual ~CCubeMesh() { }
+};
+
+class CCursorMesh : public CMesh
+{
+public:
+	CCursorMesh(float fWidth = 20.0f, float fHeight = 20.0f, float fDepth = 4.0f);
+	virtual ~CCursorMesh() { }
+};
+
+class CTextMesh : public CMesh
+{
+public:
+	template <size_t N1, size_t N2, size_t N3>
+
+	CTextMesh(float fWidth = 1.0f, float fHeight = 1.0f, float fDepth = 1.0f, int target = 0,
+		COLORREF color = RGB(0, 0, 0),
+		std::array<bool, N1> text = true, 
+		std::array<float, N2> cx = 0, 
+		std::array<float, N3> cy = 0) 
+		: CMesh(count(text.begin(), text.end(), true)*6)
+	{
+		float fHalfWidth = fWidth * 0.5f;
+		float fHalfHeight = fHeight * 0.5f;
+		float fHalfDepth = fDepth * 0.5f;
+
+		int cnt = 0;
+
+		targetStage = target;
+
+		for (int i = 0; i < text.size(); ++i) {
+			int x = i % cx.size();
+			int y = i / cx.size();
+			if (text[i]) {
+				CPolygon* pFrontFace = new CPolygon(4, color);
+				pFrontFace->SetVertex(0, CVertex(cx[x] - fHalfWidth, cy[y] + fHalfHeight, -fHalfDepth));
+				pFrontFace->SetVertex(1, CVertex(cx[x] + fHalfWidth, cy[y] + fHalfHeight, -fHalfDepth));
+				pFrontFace->SetVertex(2, CVertex(cx[x] + fHalfWidth, cy[y] - fHalfHeight, -fHalfDepth));
+				pFrontFace->SetVertex(3, CVertex(cx[x] - fHalfWidth, cy[y] - fHalfHeight, -fHalfDepth));
+				SetPolygon((cnt * 6), pFrontFace);
+
+				CPolygon* pTopFace = new CPolygon(4, color);
+				pTopFace->SetVertex(0, CVertex(cx[x] - fHalfWidth, cy[y] + fHalfHeight, +fHalfDepth));
+				pTopFace->SetVertex(1, CVertex(cx[x] + fHalfWidth, cy[y] + fHalfHeight, +fHalfDepth));
+				pTopFace->SetVertex(2, CVertex(cx[x] + fHalfWidth, cy[y] + fHalfHeight, -fHalfDepth));
+				pTopFace->SetVertex(3, CVertex(cx[x] - fHalfWidth, cy[y] + fHalfHeight, -fHalfDepth));
+				SetPolygon((cnt * 6) + 1, pTopFace);
+
+				CPolygon* pBackFace = new CPolygon(4, color);
+				pBackFace->SetVertex(0, CVertex(cx[x] - fHalfWidth, cy[y] - fHalfHeight, +fHalfDepth));
+				pBackFace->SetVertex(1, CVertex(cx[x] + fHalfWidth, cy[y] - fHalfHeight, +fHalfDepth));
+				pBackFace->SetVertex(2, CVertex(cx[x] + fHalfWidth, cy[y] + fHalfHeight, +fHalfDepth));
+				pBackFace->SetVertex(3, CVertex(cx[x] - fHalfWidth, cy[y] + fHalfHeight, +fHalfDepth));
+				SetPolygon((cnt * 6) + 2, pBackFace);
+
+				CPolygon* pBottomFace = new CPolygon(4, color);
+				pBottomFace->SetVertex(0, CVertex(cx[x] - fHalfWidth, cy[y] - fHalfHeight, -fHalfDepth));
+				pBottomFace->SetVertex(1, CVertex(cx[x] + fHalfWidth, cy[y] - fHalfHeight, -fHalfDepth));
+				pBottomFace->SetVertex(2, CVertex(cx[x] + fHalfWidth, cy[y] - fHalfHeight, +fHalfDepth));
+				pBottomFace->SetVertex(3, CVertex(cx[x] - fHalfWidth, cy[y] - fHalfHeight, +fHalfDepth));
+				SetPolygon((cnt * 6) + 3, pBottomFace);
+
+				CPolygon* pLeftFace = new CPolygon(4, color);
+				pLeftFace->SetVertex(0, CVertex(cx[x] - fHalfWidth, cy[y] + fHalfHeight, +fHalfDepth));
+				pLeftFace->SetVertex(1, CVertex(cx[x] - fHalfWidth, cy[y] + fHalfHeight, -fHalfDepth));
+				pLeftFace->SetVertex(2, CVertex(cx[x] - fHalfWidth, cy[y] - fHalfHeight, -fHalfDepth));
+				pLeftFace->SetVertex(3, CVertex(cx[x] - fHalfWidth, cy[y] - fHalfHeight, +fHalfDepth));
+				SetPolygon((cnt * 6) + 4, pLeftFace);
+
+				CPolygon* pRightFace = new CPolygon(4, color);
+				pRightFace->SetVertex(0, CVertex(cx[x] + fHalfWidth, cy[y] + fHalfHeight, -fHalfDepth));
+				pRightFace->SetVertex(1, CVertex(cx[x] + fHalfWidth, cy[y] + fHalfHeight, +fHalfDepth));
+				pRightFace->SetVertex(2, CVertex(cx[x] + fHalfWidth, cy[y] - fHalfHeight, +fHalfDepth));
+				pRightFace->SetVertex(3, CVertex(cx[x] + fHalfWidth, cy[y] - fHalfHeight, -fHalfDepth));
+				SetPolygon((cnt * 6) + 5, pRightFace);
+
+				++cnt;
+			}
+		}
+
+		m_xmOOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), 
+			XMFLOAT3(cx[cx.size() - 1], cy[0], fHalfDepth), 
+			XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+	}
+
+	virtual ~CTextMesh() { }
+};
+
+class CCartMesh : public CMesh
+{
+public:
+	CCartMesh();
+	virtual ~CCartMesh() {}
+};
+
+class CRailMesh : public CMesh
+{
+public:
+	CRailMesh(float width = 0.3f, float height = 0.3f, float depth = 1.0f);
+	virtual ~CRailMesh() {}
+};
+
+class CTankBodyMesh : public CMesh
+{
+public:
+	CTankBodyMesh();
+	virtual ~CTankBodyMesh() {}
+};
+
+class CTankTurretMesh : public CMesh
+{
+public:
+	CTankTurretMesh();
+	virtual ~CTankTurretMesh() {}
+};
+
+class CEnemyTankMesh : public CMesh
+{
+public:
+	CEnemyTankMesh();
+	virtual ~CEnemyTankMesh() {}
 };
