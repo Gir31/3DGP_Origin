@@ -6,30 +6,47 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN		// 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
-// Windows 헤더 파일:
+// Windows 기본 헤더
 #include <windows.h>
+#include <shellapi.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
-// C의 런타임 헤더 파일입니다.
-#include <iostream>
-#include <stdlib.h>
+// C/C++ 표준 라이브러리
+#include <cstdlib>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-#include <math.h>
-#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <string>
 #include <array>
 #include <vector>
+#include <algorithm>
 
-#include <Mmsystem.h>
-#pragma comment(lib, "winmm.lib")
+// DirectX 12 관련 헤더
+#include <d3d12.h>
+#include <dxgi1_4.h>
+#include <D3Dcompiler.h>
+#include <dxgidebug.h>
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "dxguid.lib")
 
+// DirectX 수학 및 유틸리티
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 
+// Microsoft::WRL::ComPtr
+#include <wrl.h>
+
+// 네임스페이스 정리
 using namespace DirectX;
 using namespace DirectX::PackedVector;
+using Microsoft::WRL::ComPtr;
 
 #define FRAMEBUFFER_WIDTH		1980
 #define FRAMEBUFFER_HEIGHT		1080
