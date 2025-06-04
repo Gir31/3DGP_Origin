@@ -5,14 +5,14 @@ XMFLOAT4X4* CGraphicsPipeline::m_pxmf4x4World = NULL;
 XMFLOAT4X4* CGraphicsPipeline::m_pxmf4x4ViewProject = NULL;
 CViewport* CGraphicsPipeline::m_pViewport = NULL;
 
-void CGraphicsPipeline::SetViewPerspectiveProjectTransform(ID3D12GraphicsCommandList* pd3dCommandList, XMFLOAT4X4* pxmf4x4VP)
-{
-	pd3dCommandList->SetGraphicsRoot32BitConstants(0, 16, pxmf4x4VP, 0); // 16 * float4 = 64byte
+void CGraphicsPipeline::SetViewPerspectiveProjectTransform(XMFLOAT4X4* pxmf4x4ViewPerspectiveProject)
+{ 
+	m_pxmf4x4ViewProject = pxmf4x4ViewPerspectiveProject;
 }
 
-void CGraphicsPipeline::SetViewOrthographicProjectTransform(ID3D12GraphicsCommandList* pd3dCommandList, XMFLOAT4X4* pxmf4x4VO)
+void CGraphicsPipeline::SetViewOrthographicProjectTransform(XMFLOAT4X4* pxmf4x4OrthographicProject)
 {
-	pd3dCommandList->SetGraphicsRoot32BitConstants(0, 16, pxmf4x4VO, 0);
+	m_pxmf4x4ViewProject = pxmf4x4OrthographicProject;
 }
 
 XMFLOAT3 CGraphicsPipeline::Transform(XMFLOAT3& xmf3Model)

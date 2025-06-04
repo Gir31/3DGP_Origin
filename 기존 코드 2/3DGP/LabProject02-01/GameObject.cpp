@@ -152,35 +152,25 @@ void CGameObject::Animate(float fElapsedTime)
 	UpdateBoundingBox();
 }
 
-void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+void CGameObject::Render(HDC hDCFrameBuffer, XMFLOAT4X4* pxmf4x4World, CMesh* pMesh)
 {
 	if (!m_bActive) return;
+	if (pMesh)
+	{
+		CGraphicsPipeline::SetWorldTransform(pxmf4x4World);
 
-	// 프러스텀 안에 있는지 검사
-	if (!pCamera->IsInFrustum(m_xmOOBB)) return;
-
-	// 1. World-View-Projection 계산
-	XMMATRIX xmWorld = XMLoadFloat4x4(&m_xmf4x4World);
-	XMMATRIX xmViewProj = XMLoadFloat4x4(&pCamera->m_xmf4x4ViewPerspectiveProject);
-	XMMATRIX xmWVP = XMMatrixMultiply(xmWorld, xmViewProj);
-	XMFLOAT4X4 xmf4x4WVP;
-	XMStoreFloat4x4(&xmf4x4WVP, XMMatrixTranspose(xmWVP));
-
-	// 2. 루트 상수로 행렬 전송 (RootParameter[1] 예시)
-	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4WVP, 0);
-
-	// 3. 색상 전달 (RootParameter[2] 예시)
-	XMFLOAT3 xmf3Color = {
-		float(GetRValue(m_dwColor)) / 255.0f,
-		float(GetGValue(m_dwColor)) / 255.0f,
-		float(GetBValue(m_dwColor)) / 255.0f
-	};
-	pd3dCommandList->SetGraphicsRoot32BitConstants(2, 3, &xmf3Color, 0);
-
-	// 4. 메시 렌더링
-	if (m_pMesh) m_pMesh->Render(pd3dCommandList);
+		HPEN hPen = ::CreatePen(PS_SOLID, 0, m_dwColor);
+		HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
+		pMesh->Render(hDCFrameBuffer);
+		::SelectObject(hDCFrameBuffer, hOldPen);
+		::DeleteObject(hPen);
+	}
 }
 
+void CGameObject::Render(HDC hDCFrameBuffer, CCamera* pCamera)
+{
+	if (pCamera->IsInFrustum(m_xmOOBB)) CGameObject::Render(hDCFrameBuffer, &m_xmf4x4World, m_pMesh);
+}
 
 void CGameObject::GenerateRayForPicking(XMVECTOR& xmvPickPosition, XMMATRIX& xmmtxView, XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection)
 {

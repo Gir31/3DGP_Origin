@@ -5,39 +5,24 @@
 
 #pragma once
 
-// [Windows 기본 헤더]
-#define WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN		// 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
+// Windows 헤더 파일:
 #include <windows.h>
-#include <Mmsystem.h>                 // 타이머 및 오디오 등
-#pragma comment(lib, "winmm.lib")
 
-// [C/C++ 표준 라이브러리]
+// C의 런타임 헤더 파일입니다.
 #include <iostream>
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
 #include <math.h>
-
 #include <algorithm>
 #include <array>
 #include <vector>
-#include <fstream>
 
-using namespace std;
+#include <Mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
-// [DirectX 12 관련 헤더]
-#include <wrl.h>                      // ComPtr
-#include <d3d12.h>                    // D3D12 기본
-#include <dxgi1_4.h>                  // DXGI (버전 확인!)
-#include <D3dcompiler.h>              // 쉐이더 컴파일
-#include <D3d12SDKLayers.h>           // 디버그 레이어
-
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "d3dcompiler.lib")
-
-// [DirectX 수학/헬퍼 라이브러리]
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
@@ -45,10 +30,6 @@ using namespace std;
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;
-
-// [ComPtr 사용 선언]
-using Microsoft::WRL::ComPtr;
-
 
 #define FRAMEBUFFER_WIDTH		1980
 #define FRAMEBUFFER_HEIGHT		1080
@@ -70,20 +51,6 @@ using Microsoft::WRL::ComPtr;
 
 inline bool IsZero(float fValue) { return((fabsf(fValue) < EPSILON)); }
 inline bool IsEqual(float fA, float fB) { return(::IsZero(fA - fB)); }
-
-extern UINT	gnCbvSrvDescriptorIncrementSize;
-
-extern ID3D12Resource* CreateBufferResource(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, void* pData, UINT nBytes, D3D12_HEAP_TYPE d3dHeapType = D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, ID3D12Resource** ppd3dUploadBuffer = NULL);
-
-inline int ReadUnityBinaryString(FILE* pFile, char* pstrToken, BYTE* pnStrLength)
-{
-	UINT nReads = 0;
-	nReads = (UINT)::fread(pnStrLength, sizeof(BYTE), 1, pFile);
-	nReads = (UINT)::fread(pstrToken, sizeof(char), *pnStrLength, pFile);
-	pstrToken[*pnStrLength] = '\0';
-
-	return(nReads);
-}
 
 namespace Vector3
 {
