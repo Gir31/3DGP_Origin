@@ -61,6 +61,9 @@ public:
 	float GetRoll() { return(m_fRoll); }
 	CCamera* GetCamera() { return(m_pCamera); }
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
+
+	void OnUpdateTransform();
+
 	//플레이어를 이동하는 함수이다.
 	void Move(ULONG nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);

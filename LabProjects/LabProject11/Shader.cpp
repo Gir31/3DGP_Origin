@@ -1,5 +1,7 @@
 #include "Shader.h"
 #include "3DGP_variableTitle.h"
+#include "3DGP_variableMenu.h"
+#include "3DGP_variableStage2.h"
 
 CShader::CShader()
 {
@@ -278,19 +280,39 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 {
 	CExplosiveObject::PrepareExplosion(pd3dDevice, pd3dCommandList);
 
-	CTextMesh* pTextMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 0, title, titleLocationX, titleLocationY);
+	CTextMesh* pTitleMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 0, title, titleLocationX, titleLocationY);
+	CTextMesh* pNameMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 0, name, nameLocationX, nameLocationY);
+	CTankTurretMesh* pCartMesh = new CTankTurretMesh(pd3dDevice, pd3dCommandList);
 
 	m_nObjects = 1;
 	m_ppObjects = new CGameObject * [m_nObjects];
 
-	CExplosiveObject* pRotatingObject = NULL;
-	pRotatingObject = new CExplosiveObject();
-	pRotatingObject->SetMesh(pTextMesh);
+	CRotatingObject* pRotatingObject = NULL;
+	pRotatingObject = new CRotatingObject();
+	pRotatingObject->SetMesh(pCartMesh);
 	pRotatingObject->SetPosition(0, 0, 10.f);
 	pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
 	pRotatingObject->SetRotationSpeed(10.0f + 3.0f);
 
 	m_ppObjects[0] = pRotatingObject;
+
+	/*CExplosiveObject* pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pTitleMesh);
+	pExplosiveObject->SetPosition(0, 0, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[0] = pExplosiveObject;
+
+	pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pNameMesh);
+	pExplosiveObject->SetPosition(0, -20, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[1] = pExplosiveObject;*/
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -342,6 +364,641 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera*
 }
 
 CGameObject* CObjectsShader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,
+	XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance)
+{
+	int nIntersected = 0;
+	*pfNearHitDistance = FLT_MAX;
+	float fHitDistance = FLT_MAX;
+	CGameObject* pSelectedObject = NULL;
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		nIntersected = m_ppObjects[j]->PickObjectByRayIntersection(xmf3PickPosition,
+			xmf4x4View, &fHitDistance);
+		if ((nIntersected > 0) && (fHitDistance < *pfNearHitDistance))
+		{
+			*pfNearHitDistance = fHitDistance;
+			pSelectedObject = m_ppObjects[j];
+		}
+	}
+	return(pSelectedObject);
+}
+
+// TitleShader
+
+
+CTitleShader::CTitleShader()
+{
+}
+
+CTitleShader::~CTitleShader()
+{
+}
+
+D3D12_INPUT_LAYOUT_DESC CTitleShader::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new
+		D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+   D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,
+   D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+	return(d3dInputLayoutDesc);
+}
+
+
+D3D12_SHADER_BYTECODE CTitleShader::CreateVertexShader(ID3DBlob** ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSDiffused", "vs_5_1",
+		ppd3dShaderBlob));
+}
+D3D12_SHADER_BYTECODE CTitleShader::CreatePixelShader(ID3DBlob** ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSDiffused", "ps_5_1",
+		ppd3dShaderBlob));
+}
+
+void CTitleShader::CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature
+	* pd3dGraphicsRootSignature)
+{
+	m_nPipelineStates = 1;
+	m_ppd3dPipelineStates = new ID3D12PipelineState * [m_nPipelineStates];
+	CShader::CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
+}
+
+
+void CTitleShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+	* pd3dCommandList)
+{
+	CExplosiveObject::PrepareExplosion(pd3dDevice, pd3dCommandList);
+
+	CTextMesh* pTitleMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 0, title, titleLocationX, titleLocationY);
+	CTextMesh* pNameMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 1, name, nameLocationX, nameLocationY);
+	CTankTurretMesh* pCartMesh = new CTankTurretMesh(pd3dDevice, pd3dCommandList);
+
+	m_nObjects = 2;
+	m_ppObjects = new CGameObject * [m_nObjects];
+
+	CExplosiveObject* pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pTitleMesh);
+	pExplosiveObject->SetPosition(0, 0, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[0] = pExplosiveObject;
+
+	pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pNameMesh);
+	pExplosiveObject->SetPosition(0, -20, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[1] = pExplosiveObject;
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+}
+
+void CTitleShader::ReleaseObjects()
+{
+	if (CExplosiveObject::m_pExplosionMesh) CExplosiveObject::m_pExplosionMesh->Release();
+
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++)
+		{
+			if (m_ppObjects[j]) delete m_ppObjects[j];
+		}
+		delete[] m_ppObjects;
+	}
+}
+
+void CTitleShader::AnimateObjects(float fTimeElapsed)
+{
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		m_ppObjects[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTitleShader::ReleaseUploadBuffers()
+{
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++) m_ppObjects[j]->ReleaseUploadBuffers();
+	}
+}
+
+void CTitleShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	CShader::Render(pd3dCommandList, pCamera);
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+CGameObject* CTitleShader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,
+	XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance)
+{
+	int nIntersected = 0;
+	*pfNearHitDistance = FLT_MAX;
+	float fHitDistance = FLT_MAX;
+	CGameObject* pSelectedObject = NULL;
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		nIntersected = m_ppObjects[j]->PickObjectByRayIntersection(xmf3PickPosition,
+			xmf4x4View, &fHitDistance);
+		if ((nIntersected > 0) && (fHitDistance < *pfNearHitDistance))
+		{
+			*pfNearHitDistance = fHitDistance;
+			pSelectedObject = m_ppObjects[j];
+		}
+	}
+	return(pSelectedObject);
+}
+
+// MenuShader
+
+
+CMenuShader::CMenuShader()
+{
+}
+
+CMenuShader::~CMenuShader()
+{
+}
+
+D3D12_INPUT_LAYOUT_DESC CMenuShader::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new
+		D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+   D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,
+   D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+	return(d3dInputLayoutDesc);
+}
+
+
+D3D12_SHADER_BYTECODE CMenuShader::CreateVertexShader(ID3DBlob** ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSDiffused", "vs_5_1",
+		ppd3dShaderBlob));
+}
+D3D12_SHADER_BYTECODE CMenuShader::CreatePixelShader(ID3DBlob** ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSDiffused", "ps_5_1",
+		ppd3dShaderBlob));
+}
+
+void CMenuShader::CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature
+	* pd3dGraphicsRootSignature)
+{
+	m_nPipelineStates = 1;
+	m_ppd3dPipelineStates = new ID3D12PipelineState * [m_nPipelineStates];
+	CShader::CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
+}
+
+
+void CMenuShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+	* pd3dCommandList)
+{
+	CExplosiveObject::PrepareExplosion(pd3dDevice, pd3dCommandList);
+
+	CTextMesh* pTutorialMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 1, tutorialText, LocationX, LocationY);
+	CTextMesh* pL1Mesh = new CTextMesh(pd3dDevice, pd3dCommandList, 2, level1Text, LocationX, LocationY);
+	CTextMesh* pL2Mesh = new CTextMesh(pd3dDevice, pd3dCommandList, 3, level2Text, LocationX, LocationY);
+	CTextMesh* pStartMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 2, startText, LocationX, LocationY);
+	CTextMesh* pEndMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 1, endText, LocationX, LocationY);
+
+	m_nObjects = 5;
+	m_ppObjects = new CGameObject * [m_nObjects];
+
+	CExplosiveObject* pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pTutorialMesh);
+	pExplosiveObject->SetPosition(0, 20.f, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[0] = pExplosiveObject;
+
+	pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pL1Mesh);
+	pExplosiveObject->SetPosition(0, 10.f, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[1] = pExplosiveObject;
+
+	pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pL2Mesh);
+	pExplosiveObject->SetPosition(0, 0, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[2] = pExplosiveObject;
+
+	pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pStartMesh);
+	pExplosiveObject->SetPosition(0, -10.f, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[3] = pExplosiveObject;
+
+	pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pEndMesh);
+	pExplosiveObject->SetPosition(0, -20.f, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[4] = pExplosiveObject;
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+}
+
+void CMenuShader::ReleaseObjects()
+{
+	if (CExplosiveObject::m_pExplosionMesh) CExplosiveObject::m_pExplosionMesh->Release();
+
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++)
+		{
+			if (m_ppObjects[j]) delete m_ppObjects[j];
+		}
+		delete[] m_ppObjects;
+	}
+}
+
+void CMenuShader::AnimateObjects(float fTimeElapsed)
+{
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		m_ppObjects[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CMenuShader::ReleaseUploadBuffers()
+{
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++) m_ppObjects[j]->ReleaseUploadBuffers();
+	}
+}
+
+void CMenuShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	CShader::Render(pd3dCommandList, pCamera);
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+CGameObject* CMenuShader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,
+	XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance)
+{
+	int nIntersected = 0;
+	*pfNearHitDistance = FLT_MAX;
+	float fHitDistance = FLT_MAX;
+	CGameObject* pSelectedObject = NULL;
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		nIntersected = m_ppObjects[j]->PickObjectByRayIntersection(xmf3PickPosition,
+			xmf4x4View, &fHitDistance);
+		if ((nIntersected > 0) && (fHitDistance < *pfNearHitDistance))
+		{
+			*pfNearHitDistance = fHitDistance;
+			pSelectedObject = m_ppObjects[j];
+		}
+	}
+	return(pSelectedObject);
+}
+
+// Stage1 Shader
+
+
+CS1Shader::CS1Shader()
+{
+}
+
+CS1Shader::~CS1Shader()
+{
+}
+
+D3D12_INPUT_LAYOUT_DESC CS1Shader::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new
+		D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+   D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,
+   D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+	return(d3dInputLayoutDesc);
+}
+
+
+D3D12_SHADER_BYTECODE CS1Shader::CreateVertexShader(ID3DBlob** ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSDiffused", "vs_5_1",
+		ppd3dShaderBlob));
+}
+D3D12_SHADER_BYTECODE CS1Shader::CreatePixelShader(ID3DBlob** ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSDiffused", "ps_5_1",
+		ppd3dShaderBlob));
+}
+
+void CS1Shader::CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature
+	* pd3dGraphicsRootSignature)
+{
+	m_nPipelineStates = 1;
+	m_ppd3dPipelineStates = new ID3D12PipelineState * [m_nPipelineStates];
+	CShader::CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
+}
+
+
+void CS1Shader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+	* pd3dCommandList)
+{
+	m_nObjects = 1;
+	m_ppObjects = new CGameObject * [m_nObjects];
+
+	CRailMesh* pRailMesh = new CRailMesh(pd3dDevice, pd3dCommandList);
+
+	CGameObject* pGameObject = NULL;
+	pGameObject = new CGameObject();
+	pGameObject->SetMesh(pRailMesh);
+	pGameObject->SetPosition(0, 0, 10.f);
+
+	m_ppObjects[0] = pGameObject;
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+}
+
+void CS1Shader::ReleaseObjects()
+{
+	if (CExplosiveObject::m_pExplosionMesh) CExplosiveObject::m_pExplosionMesh->Release();
+
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++)
+		{
+			if (m_ppObjects[j]) delete m_ppObjects[j];
+		}
+		delete[] m_ppObjects;
+	}
+}
+
+void CS1Shader::AnimateObjects(float fTimeElapsed)
+{
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		m_ppObjects[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CS1Shader::ReleaseUploadBuffers()
+{
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++) m_ppObjects[j]->ReleaseUploadBuffers();
+	}
+}
+
+void CS1Shader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	CShader::Render(pd3dCommandList, pCamera);
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+CGameObject* CS1Shader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,
+	XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance)
+{
+	int nIntersected = 0;
+	*pfNearHitDistance = FLT_MAX;
+	float fHitDistance = FLT_MAX;
+	CGameObject* pSelectedObject = NULL;
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		nIntersected = m_ppObjects[j]->PickObjectByRayIntersection(xmf3PickPosition,
+			xmf4x4View, &fHitDistance);
+		if ((nIntersected > 0) && (fHitDistance < *pfNearHitDistance))
+		{
+			*pfNearHitDistance = fHitDistance;
+			pSelectedObject = m_ppObjects[j];
+		}
+	}
+	return(pSelectedObject);
+}
+XMFLOAT3 CS1Shader::CatmullRom(const XMFLOAT3& p0, const XMFLOAT3& p1, const XMFLOAT3& p2, const XMFLOAT3& p3, float t)
+{
+	XMVECTOR v0 = XMLoadFloat3(&p0);
+	XMVECTOR v1 = XMLoadFloat3(&p1);
+	XMVECTOR v2 = XMLoadFloat3(&p2);
+	XMVECTOR v3 = XMLoadFloat3(&p3);
+
+	float t2 = t * t;
+	float t3 = t2 * t;
+
+	XMVECTOR result =
+		0.5f * (
+			(2.0f * v1) +
+			(-v0 + v2) * t +
+			(2.0f * v0 - 5.0f * v1 + 4.0f * v2 - v3) * t2 +
+			(-v0 + 3.0f * v1 - 3.0f * v2 + v3) * t3
+			);
+
+	XMFLOAT3 final;
+	XMStoreFloat3(&final, result);
+	return final;
+}
+
+// Stage2 Shader
+
+CS2Shader::CS2Shader()
+{
+}
+
+CS2Shader::~CS2Shader()
+{
+}
+
+D3D12_INPUT_LAYOUT_DESC CS2Shader::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new
+		D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+   D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,
+   D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+	return(d3dInputLayoutDesc);
+}
+
+
+D3D12_SHADER_BYTECODE CS2Shader::CreateVertexShader(ID3DBlob** ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSDiffused", "vs_5_1",
+		ppd3dShaderBlob));
+}
+D3D12_SHADER_BYTECODE CS2Shader::CreatePixelShader(ID3DBlob** ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSDiffused", "ps_5_1",
+		ppd3dShaderBlob));
+}
+
+void CS2Shader::CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature
+	* pd3dGraphicsRootSignature)
+{
+	m_nPipelineStates = 1;
+	m_ppd3dPipelineStates = new ID3D12PipelineState * [m_nPipelineStates];
+	CShader::CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
+}
+
+
+void CS2Shader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+	* pd3dCommandList)
+{
+	CExplosiveObject::PrepareExplosion(pd3dDevice, pd3dCommandList); 
+
+	m_nObjects = 16;
+	m_ppObjects = new CGameObject * [m_nObjects];
+
+	CEnemyTankMesh* pEnemyTank = new CEnemyTankMesh(pd3dDevice, pd3dCommandList);
+	CCubeMeshDiffused* pCube = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList);
+	CTextMesh* pText = new CTextMesh(pd3dDevice, pd3dCommandList, 1, win, winLocationX, winLocationY);
+
+
+	CExplosiveObject* pExplosiveObject = NULL;
+	for (int i = 0; i < 10; ++i) {
+		pExplosiveObject = NULL; 
+
+		pExplosiveObject = new CExplosiveObject();
+		pExplosiveObject->SetMesh(pEnemyTank);
+
+		float x = (rand() % 1001) - 500.0f;
+		float z = (rand() % 1001) - 500.0f;
+
+		pExplosiveObject->SetPosition(x, 0.0f, z);
+
+		float yaw = static_cast<float>(rand() % 360);
+		XMMATRIX xmRotation = XMMatrixRotationY(XMConvertToRadians(yaw));
+
+		XMMATRIX fixPitch = XMMatrixRotationX(XMConvertToRadians(90.0f));
+		xmRotation = fixPitch * xmRotation;
+
+		XMFLOAT4X4 xmfRotation;
+		
+
+		XMStoreFloat4x4(&xmfRotation, xmRotation);
+		m_ppObjects[i] = pExplosiveObject;
+		m_ppObjects[i]->SetRotationTransform(&xmfRotation);
+	}
+	
+	for (int i = 10; i < 15; ++i) {
+		pExplosiveObject = NULL; 
+
+		pExplosiveObject = new CExplosiveObject();
+		pExplosiveObject->SetMesh(pCube);
+
+		float x = (rand() % 1001) - 500.0f;
+		float z = (rand() % 1001) - 500.0f;
+		pExplosiveObject->SetPosition(x, 0.0f, z);
+
+		float yaw = static_cast<float>(rand() % 360);
+		XMMATRIX xmRotation = XMMatrixRotationY(XMConvertToRadians(yaw));
+
+		XMMATRIX fixPitch = XMMatrixRotationX(XMConvertToRadians(90.0f));
+		xmRotation = fixPitch * xmRotation;
+
+		XMFLOAT4X4 xmfRotation;
+		XMStoreFloat4x4(&xmfRotation, xmRotation);
+		m_ppObjects[i] = pExplosiveObject;
+		m_ppObjects[i]->SetRotationTransform(&xmfRotation);
+	}
+
+
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pText);
+
+	pExplosiveObject->SetPosition(0.0f, 0.0f, 0.0f);
+
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(0.5f);
+
+	m_ppObjects[15] = pExplosiveObject;
+
+	// m_ppObjects[15]->SetActive(false);
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+}
+
+void CS2Shader::ReleaseObjects()
+{
+	if (CExplosiveObject::m_pExplosionMesh) CExplosiveObject::m_pExplosionMesh->Release();
+
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++)
+		{
+			if (m_ppObjects[j]) delete m_ppObjects[j];
+		}
+		delete[] m_ppObjects;
+	}
+}
+
+void CS2Shader::AnimateObjects(float fTimeElapsed)
+{
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		m_ppObjects[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CS2Shader::ReleaseUploadBuffers()
+{
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++) m_ppObjects[j]->ReleaseUploadBuffers();
+	}
+}
+
+void CS2Shader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	CShader::Render(pd3dCommandList, pCamera);
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+CGameObject* CS2Shader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,
 	XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance)
 {
 	int nIntersected = 0;

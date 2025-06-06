@@ -1,5 +1,4 @@
 #include "GameFramework.h"
-#include "stdafx.h"
 #include "LabProject11.h"
 
 
@@ -311,24 +310,24 @@ void CGameFramework::CreateDepthStencilView()
 void CGameFramework::BuildObjects()
 {
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
-	m_pScene = new CScene();
-	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
+	manager = new StageManager(new CTitleScene(), new CMenuScene(), new CS1Scene(), new CS2Scene());
+	if (manager->getCurrStage()) manager->getCurrStage()->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 	CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice,
-		m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+		m_pd3dCommandList, manager->getCurrStage()->GetGraphicsRootSignature());
 	m_pPlayer = pAirplanePlayer;
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pd3dCommandList->Close();
 	ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
 	m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
 	WaitForGpuComplete();
-	if (m_pScene) m_pScene->ReleaseUploadBuffers();
+	if (manager->getCurrStage()) manager->getCurrStage()->ReleaseUploadBuffers();
 	m_GameTimer.Reset();
 }
 
 void CGameFramework::ReleaseObjects()
 {
-	if (m_pScene) m_pScene->ReleaseObjects();
-	if (m_pScene) delete m_pScene;
+	if (manager->getCurrStage()) manager->getCurrStage()->ReleaseObjects();
+	if (manager->getCurrStage()) delete manager->getCurrStage();
 }
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
@@ -337,9 +336,24 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	switch (nMessageID)
 	{
 	case WM_LBUTTONDOWN:
+	{
+		::SetCapture(hWnd);
+		::GetCursorPos(&m_ptOldCursorPos);
+
+		m_pSelectedObject = manager->getCurrStage()->PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), m_pCamera);
+		if (manager->getCurrLevel() == 0 || manager->getCurrLevel() == 1) {
+			if (m_pSelectedObject) {
+				if (m_pSelectedObject->getTargetStage() != manager->getCurrLevel()) {
+					manager->setReady(true);
+					manager->setNextLevel(m_pSelectedObject->getTargetStage());
+				}
+			}
+		}
+		break;
+	}
 	case WM_RBUTTONDOWN:
 		//마우스 캡쳐를 하고 현재 마우스 위치를 가져온다.
-		m_pSelectedObject = m_pScene->PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), m_pCamera);
+		m_pSelectedObject = manager->getCurrStage()->PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), m_pCamera);
 		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
 		break;
@@ -472,7 +486,12 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::AnimateObjects()
 {
-	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
+
+	if (manager->getCurrStage()) manager->getCurrStage()->AnimateObjects(m_GameTimer.GetTimeElapsed());
+	if (manager->getReady()) {
+		manager->waitTime(m_pd3dDevice, m_pd3dCommandList, fTimeElapsed);
+	}
 }
 
 void CGameFramework::WaitForGpuComplete()
@@ -529,7 +548,7 @@ void CGameFramework::FrameAdvance()
 		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE,
 		&d3dDsvCPUDescriptorHandle);
-	if (m_pScene) m_pScene->Render(m_pd3dCommandList, m_pCamera);
+	if (manager->getCurrStage()) manager->getCurrStage()->Render(m_pd3dCommandList, m_pCamera);
 	//3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다.
 #ifdef _WITH_PLAYER_TOP
 //렌더 타겟은 그대로 두고 깊이 버퍼를 1.0으로 지우고 플레이어를 렌더링하면 플레이어는 무조건 그려질 것이다.

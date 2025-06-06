@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Player.h"
+#include "StageManager.h"
 
 class CGameFramework
 {
@@ -76,8 +77,6 @@ private:
 	HANDLE m_hFenceEvent;
 	//펜스 인터페이스 포인터, 펜스의 값, 이벤트 핸들이다.
 
-
-
 	//뷰포트와 씨저 사각형이다. 
 	ID3D12Resource* m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers];
 public:
@@ -131,6 +130,7 @@ public:
 		CPlayer* m_pPlayer = NULL;
 		//마지막으로 마우스 버튼을 클릭할 때의 마우스 커서의 위치이다.
 		POINT m_ptOldCursorPos;
+		StageManager* manager = NULL;
 
 		CGameObject* m_pSelectedObject = NULL;
 };

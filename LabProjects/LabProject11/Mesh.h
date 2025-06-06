@@ -53,11 +53,14 @@ protected:
 	UINT m_nVertices = 0;
 	UINT m_nStride = 0;
 	UINT m_nOffset = 0;
+
+	int							targetStage;
+	bool						beSheild = false;
 public:
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 	int CheckRayIntersection(XMFLOAT3& xmRayPosition, XMFLOAT3& xmRayDirection, float* pfNearHitDistance);
 	//인덱스 버퍼를 위한 내용
-
+	int getTargetStage() { return targetStage; }
 	BoundingOrientedBox	m_xmBoundingBox = BoundingOrientedBox();
 protected:
 	ID3D12Resource* m_pd3dIndexBuffer = NULL;
@@ -120,7 +123,7 @@ public:
 
 		int cnt = 0;
 
-		//targetStage = target;
+		targetStage = target;
 
 		int cubeCount = std::count(text.begin(), text.end(), true);
 
@@ -201,4 +204,41 @@ public:
 	}
 
 	virtual ~CTextMesh() {}
+};
+
+
+class CCartMesh : public CMesh
+{
+public:
+	CCartMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~CCartMesh() {}
+};
+
+class CRailMesh : public CMesh
+{
+public:
+	CRailMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList,
+		float width = 0.3f, float height = 0.3f, float depth = 1.0f);
+	virtual ~CRailMesh() {}
+};
+
+class CTankBodyMesh : public CMesh
+{
+public:
+	CTankBodyMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~CTankBodyMesh() {}
+};
+
+class CTankTurretMesh : public CMesh
+{
+public:
+	CTankTurretMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~CTankTurretMesh() {}
+};
+
+class CEnemyTankMesh : public CMesh
+{
+public:
+	CEnemyTankMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~CEnemyTankMesh() {}
 };

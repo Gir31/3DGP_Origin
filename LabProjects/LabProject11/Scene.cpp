@@ -1,4 +1,5 @@
 #include "Scene.h"
+
 CScene::CScene()
 {
 }
@@ -49,7 +50,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
 {
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 	m_nShaders = 1;
-	m_pShaders = new CObjectsShader[m_nShaders];
+	m_pShaders = new CShader[m_nShaders];
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
 }
@@ -135,4 +136,236 @@ CGameObject* CScene::PickObjectPointedByCursor(int xClient, int yClient, CCamera
 		}
 	}
 	return(pNearestObject);
+}
+
+// TitleScene
+CTitleScene::CTitleScene()
+{
+}
+CTitleScene::~CTitleScene()
+{
+}
+
+void CTitleScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+	* pd3dCommandList)
+{
+	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
+	m_nShaders = 1;
+	m_pShaders = new CTitleShader[m_nShaders];
+	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
+}
+void CTitleScene::ReleaseObjects()
+{
+	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].ReleaseShaderVariables();
+		m_pShaders[i].ReleaseObjects();
+	}
+	if (m_pShaders) delete[] m_pShaders;
+}
+void CTitleScene::ReleaseUploadBuffers()
+{
+	for (int i = 0; i < m_nShaders; i++) m_pShaders[i].ReleaseUploadBuffers();
+}
+
+void CTitleScene::AnimateObjects(float fTimeElapsed)
+{
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].AnimateObjects(fTimeElapsed);
+	}
+}
+
+bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	return(false);
+}
+bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	return(false);
+}
+
+void CTitleScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
+	pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
+	pCamera->UpdateShaderVariables(pd3dCommandList);
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].Render(pd3dCommandList, pCamera);
+	}
+}
+
+// MenuScene
+CMenuScene::CMenuScene()
+{
+}
+CMenuScene::~CMenuScene()
+{
+}
+
+void CMenuScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+	* pd3dCommandList)
+{
+	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
+	m_nShaders = 1;
+	m_pShaders = new CMenuShader[m_nShaders];
+	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
+}
+void CMenuScene::ReleaseObjects()
+{
+	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].ReleaseShaderVariables();
+		m_pShaders[i].ReleaseObjects();
+	}
+	if (m_pShaders) delete[] m_pShaders;
+}
+void CMenuScene::ReleaseUploadBuffers()
+{
+	for (int i = 0; i < m_nShaders; i++) m_pShaders[i].ReleaseUploadBuffers();
+}
+
+void CMenuScene::AnimateObjects(float fTimeElapsed)
+{
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].AnimateObjects(fTimeElapsed);
+	}
+}
+
+bool CMenuScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	return(false);
+}
+bool CMenuScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	return(false);
+}
+
+void CMenuScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
+	pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
+	pCamera->UpdateShaderVariables(pd3dCommandList);
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].Render(pd3dCommandList, pCamera);
+	}
+}
+
+// Stage1 Scene
+CS1Scene::CS1Scene()
+{
+}
+CS1Scene::~CS1Scene()
+{
+}
+
+void CS1Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+	* pd3dCommandList)
+{
+	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
+	m_nShaders = 1;
+	m_pShaders = new CS1Shader[m_nShaders];
+	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
+}
+void CS1Scene::ReleaseObjects()
+{
+	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].ReleaseShaderVariables();
+		m_pShaders[i].ReleaseObjects();
+	}
+	if (m_pShaders) delete[] m_pShaders;
+}
+void CS1Scene::ReleaseUploadBuffers()
+{
+	for (int i = 0; i < m_nShaders; i++) m_pShaders[i].ReleaseUploadBuffers();
+}
+
+void CS1Scene::AnimateObjects(float fTimeElapsed)
+{
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].AnimateObjects(fTimeElapsed);
+	}
+}
+
+bool CS1Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	return(false);
+}
+bool CS1Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	return(false);
+}
+
+void CS1Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
+	pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
+	pCamera->UpdateShaderVariables(pd3dCommandList);
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].Render(pd3dCommandList, pCamera);
+	}
+}
+
+// Stage2 Scene
+CS2Scene::CS2Scene()
+{
+}
+CS2Scene::~CS2Scene()
+{
+}
+
+void CS2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
+	* pd3dCommandList)
+{
+	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
+	m_nShaders = 1;
+	m_pShaders = new CS2Shader[m_nShaders];
+	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
+}
+void CS2Scene::ReleaseObjects()
+{
+	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].ReleaseShaderVariables();
+		m_pShaders[i].ReleaseObjects();
+	}
+	if (m_pShaders) delete[] m_pShaders;
+}
+void CS2Scene::ReleaseUploadBuffers()
+{
+	for (int i = 0; i < m_nShaders; i++) m_pShaders[i].ReleaseUploadBuffers();
+}
+
+void CS2Scene::AnimateObjects(float fTimeElapsed)
+{
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].AnimateObjects(fTimeElapsed);
+	}
+}
+
+bool CS2Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	return(false);
+}
+bool CS2Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	return(false);
+}
+
+void CS2Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
+	pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
+	pCamera->UpdateShaderVariables(pd3dCommandList);
+	for (int i = 0; i < m_nShaders; i++)
+	{
+		m_pShaders[i].Render(pd3dCommandList, pCamera);
+	}
 }
