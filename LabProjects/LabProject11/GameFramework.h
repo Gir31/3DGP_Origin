@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Player.h"
+#include "StageManager.h"
 
 class CGameFramework
 {
@@ -76,7 +77,7 @@ private:
 	HANDLE m_hFenceEvent;
 	//펜스 인터페이스 포인터, 펜스의 값, 이벤트 핸들이다.
 
-
+	StageManager* manager = NULL;
 
 	//뷰포트와 씨저 사각형이다. 
 	ID3D12Resource* m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers];

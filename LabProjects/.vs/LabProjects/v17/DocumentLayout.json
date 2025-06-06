@@ -1,7 +1,28 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\82102\\Desktop\\LabProjects\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\Mesh.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\Mesh.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\Scene.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\Scene.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\Camera.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\Camera.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\GameFramework.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\GameFramework.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\GameFramework.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\GameFramework.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,8 +30,74 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
-          "Children": []
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Camera.h",
+              "DocumentMoniker": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\Camera.h",
+              "RelativeDocumentMoniker": "LabProject11\\Camera.h",
+              "ToolTip": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\Camera.h",
+              "RelativeToolTip": "LabProject11\\Camera.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-06-06T12:44:10.166Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Mesh.cpp",
+              "DocumentMoniker": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\Mesh.cpp",
+              "RelativeDocumentMoniker": "LabProject11\\Mesh.cpp",
+              "ToolTip": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\Mesh.cpp",
+              "RelativeToolTip": "LabProject11\\Mesh.cpp",
+              "ViewState": "AgIAAKwAAAAAAAAAAAAowGkBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-06-06T11:46:35.685Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Scene.h",
+              "DocumentMoniker": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\Scene.h",
+              "RelativeDocumentMoniker": "LabProject11\\Scene.h",
+              "ToolTip": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\Scene.h",
+              "RelativeToolTip": "LabProject11\\Scene.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-06-06T12:44:22.567Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "GameFramework.cpp",
+              "DocumentMoniker": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\GameFramework.cpp",
+              "RelativeDocumentMoniker": "LabProject11\\GameFramework.cpp",
+              "ToolTip": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\GameFramework.cpp",
+              "RelativeToolTip": "LabProject11\\GameFramework.cpp",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAABEAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-06-06T11:44:53.857Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "GameFramework.h",
+              "DocumentMoniker": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\GameFramework.h",
+              "RelativeDocumentMoniker": "LabProject11\\GameFramework.h",
+              "ToolTip": "C:\\Users\\82102\\Desktop\\3dgp_fight\\3DGP_Origin\\LabProjects\\LabProject11\\GameFramework.h",
+              "RelativeToolTip": "LabProject11\\GameFramework.h",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAAYAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-06-06T11:43:48.85Z",
+              "EditorCaption": ""
+            }
+          ]
         }
       ]
     }

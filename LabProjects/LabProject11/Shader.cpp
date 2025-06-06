@@ -278,19 +278,39 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 {
 	CExplosiveObject::PrepareExplosion(pd3dDevice, pd3dCommandList);
 
-	CTextMesh* pTextMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 0, title, titleLocationX, titleLocationY);
+	CTextMesh* pTitleMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 0, title, titleLocationX, titleLocationY);
+	CTextMesh* pNameMesh = new CTextMesh(pd3dDevice, pd3dCommandList, 0, name, nameLocationX, nameLocationY);
+	CTankTurretMesh* pCartMesh = new CTankTurretMesh(pd3dDevice, pd3dCommandList);
 
 	m_nObjects = 1;
 	m_ppObjects = new CGameObject * [m_nObjects];
 
-	CExplosiveObject* pRotatingObject = NULL;
-	pRotatingObject = new CExplosiveObject();
-	pRotatingObject->SetMesh(pTextMesh);
+	CRotatingObject* pRotatingObject = NULL;
+	pRotatingObject = new CRotatingObject();
+	pRotatingObject->SetMesh(pCartMesh);
 	pRotatingObject->SetPosition(0, 0, 10.f);
 	pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
 	pRotatingObject->SetRotationSpeed(10.0f + 3.0f);
 
 	m_ppObjects[0] = pRotatingObject;
+
+	/*CExplosiveObject* pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pTitleMesh);
+	pExplosiveObject->SetPosition(0, 0, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[0] = pExplosiveObject;
+
+	pExplosiveObject = NULL;
+	pExplosiveObject = new CExplosiveObject();
+	pExplosiveObject->SetMesh(pNameMesh);
+	pExplosiveObject->SetPosition(0, -20, 10.f);
+	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
+
+	m_ppObjects[1] = pExplosiveObject;*/
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }

@@ -202,3 +202,40 @@ public:
 
 	virtual ~CTextMesh() {}
 };
+
+
+class CCartMesh : public CMesh
+{
+public:
+	CCartMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~CCartMesh() {}
+};
+
+class CRailMesh : public CMesh
+{
+public:
+	CRailMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList,
+		float width = 0.3f, float height = 0.3f, float depth = 1.0f);
+	virtual ~CRailMesh() {}
+};
+
+class CTankBodyMesh : public CMesh
+{
+public:
+	CTankBodyMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~CTankBodyMesh() {}
+};
+
+class CTankTurretMesh : public CMesh
+{
+public:
+	CTankTurretMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~CTankTurretMesh() {}
+};
+
+class CEnemyTankMesh : public CMesh
+{
+public:
+	CEnemyTankMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~CEnemyTankMesh() {}
+};
