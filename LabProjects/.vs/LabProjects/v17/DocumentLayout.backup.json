@@ -1,22 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\82102\\Desktop\\LabProjects\\",
+  "WorkspaceRootPath": "C:\\Users\\rpg26\\OneDrive\\Desktop\\Test03\\3DGP_Origin\\LabProjects\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\GameObject.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\GameObject.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\GameObject.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\GameObject.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\GameFramework.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\GameFramework.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\Shader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\rpg26\\OneDrive\\Desktop\\Test03\\3DGP_Origin\\LabProjects\\LabProject11\\Shader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\Shader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|C:\\Users\\rpg26\\OneDrive\\Desktop\\Test03\\3DGP_Origin\\LabProjects\\LabProject11\\Shader.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{372038FC-3776-49D1-AABD-901F3D2D7221}|LabProject11\\LabProject11.vcxproj|solutionrelative:LabProject11\\Shader.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,40 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "GameObject.cpp",
-              "DocumentMoniker": "C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\GameObject.cpp",
-              "RelativeDocumentMoniker": "LabProject11\\GameObject.cpp",
-              "ToolTip": "C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\GameObject.cpp*",
-              "RelativeToolTip": "LabProject11\\GameObject.cpp*",
-              "ViewState": "AgIAADYAAAAAAAAAAAAAAF4AAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-06-06T06:48:00.644Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "Shader.cpp",
-              "DocumentMoniker": "C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\Shader.cpp",
+              "DocumentMoniker": "C:\\Users\\rpg26\\OneDrive\\Desktop\\Test03\\3DGP_Origin\\LabProjects\\LabProject11\\Shader.cpp",
               "RelativeDocumentMoniker": "LabProject11\\Shader.cpp",
-              "ToolTip": "C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\Shader.cpp",
-              "RelativeToolTip": "LabProject11\\Shader.cpp",
-              "ViewState": "AgIAAB4BAAAAAAAAAAAIwBMBAABVAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\rpg26\\OneDrive\\Desktop\\Test03\\3DGP_Origin\\LabProjects\\LabProject11\\Shader.cpp*",
+              "RelativeToolTip": "LabProject11\\Shader.cpp*",
+              "ViewState": "AgIAAJMBAAAAAAAAAAAcwM4BAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-06-06T09:40:48.231Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "GameFramework.cpp",
-              "DocumentMoniker": "C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\GameFramework.cpp",
-              "RelativeDocumentMoniker": "LabProject11\\GameFramework.cpp",
-              "ToolTip": "C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\GameFramework.cpp",
-              "RelativeToolTip": "LabProject11\\GameFramework.cpp",
-              "ViewState": "AgIAAK0BAAAAAAAAAAAcwC4CAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-06-06T09:32:36.574Z",
+              "WhenOpened": "2025-06-06T15:35:54.562Z",
               "EditorCaption": ""
             }
           ]
@@ -75,12 +41,12 @@
       "Orientation": 0,
       "VerticalTabListWidth": 256,
       "FloatingWindowState": {
-        "Id": "091be731-75ab-495e-81d9-dc5dac08f6a7",
-        "Display": 0,
-        "X": -73,
-        "Y": 340,
-        "Width": 768,
-        "Height": 785,
+        "Id": "6897d0ca-3893-4f94-b78d-0e22b05fa8c2",
+        "Display": 1,
+        "X": 162,
+        "Y": 92,
+        "Width": 2329,
+        "Height": 1126,
         "WindowState": 0
       },
       "DocumentGroups": [
@@ -91,14 +57,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "GameObject.h",
-              "DocumentMoniker": "C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\GameObject.h",
-              "RelativeDocumentMoniker": "LabProject11\\GameObject.h",
-              "ToolTip": "C:\\Users\\82102\\Desktop\\LabProjects\\LabProject11\\GameObject.h",
-              "RelativeToolTip": "LabProject11\\GameObject.h",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAGEAAAAdAAAAAAAAAA==",
+              "Title": "Shader.h",
+              "DocumentMoniker": "C:\\Users\\rpg26\\OneDrive\\Desktop\\Test03\\3DGP_Origin\\LabProjects\\LabProject11\\Shader.h",
+              "RelativeDocumentMoniker": "LabProject11\\Shader.h",
+              "ToolTip": "C:\\Users\\rpg26\\OneDrive\\Desktop\\Test03\\3DGP_Origin\\LabProjects\\LabProject11\\Shader.h",
+              "RelativeToolTip": "LabProject11\\Shader.h",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAAFYAAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-06-06T10:52:16.788Z",
+              "WhenOpened": "2025-06-06T15:35:55.649Z",
               "EditorCaption": ""
             }
           ]
