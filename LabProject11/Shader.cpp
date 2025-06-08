@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "Player.h"
 #include "3DGP_variableTitle.h"
 #include "3DGP_variableMenu.h"
 #include "3DGP_variableStage2.h"
@@ -994,30 +995,34 @@ CGameObject* CS2Shader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,
 }
 void CS2Shader::CheckBulletCollisions(CPlayer* pPlayer)
 {
-	//CTank* pTankPlayer = dynamic_cast<CTank*>(pPlayer);
-	//if (!pTankPlayer) return;
+	CTank* pTankPlayer = dynamic_cast<CTank*>(pPlayer);
+	if (!pTankPlayer) return;
 
-	//for (int i = 0; i < pTankPlayer->GetBulletCount(); ++i)
-	//{
-	//	CBulletObject* pBullet = pTankPlayer->GetBullet(i);
-	//	if (!pBullet || !pBullet->GetActive()) continue;
+	for (int i = 0; i < pTankPlayer->GetBulletCount(); ++i)
+	{
+		CBulletObject* pBullet = pTankPlayer->GetBullet(i);
+		if (!pBullet || !pBullet->GetActive()) continue;
 
-	//	BoundingOrientedBox bulletBox = pBullet->GetTransformedBoundingBox();
+		BoundingOrientedBox bulletBox = pBullet->GetTransformedBoundingBox();
 
-	//	for (int j = 0; j < m_nObjects; ++j)
-	//	{
-	//		CGameObject* pTarget = m_ppObjects[j];
-	//		if (!pTarget || !pTarget->GetActive()) continue;
+		for (int j = 0; j < m_nObjects; ++j)
+		{
+			CGameObject* pTarget = m_ppObjects[j];
+			if (!pTarget || !pTarget->GetActive()) continue;
 
-	//		BoundingOrientedBox targetBox = pTarget->GetTransformedBoundingBox();
+			BoundingOrientedBox targetBox = pTarget->GetTransformedBoundingBox();
 
-	//		if (bulletBox.Intersects(targetBox))
-	//		{
-	//			pBullet->SetActive(false);
-	//			pTarget->SetActive(false);
+			if (bulletBox.Intersects(targetBox))
+			{
+				char szBuffer[128];
+				sprintf_s(szBuffer, "충돌 발생: Bullet[%d] -> Enemy[%d]\n", i, j);
+				OutputDebugStringA(szBuffer);
 
-	//			// 추가 처리 (예: 점수 증가, 효과 등)
-	//		}
-	//	}
-	//}
+				pBullet->SetActive(false);
+				pTarget->SetActive(false);
+
+				// 추가 처리 (예: 점수 증가, 효과 등)
+			}
+		}
+	}
 }
