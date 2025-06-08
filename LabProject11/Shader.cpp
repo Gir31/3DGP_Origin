@@ -296,24 +296,6 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 
 	m_ppObjects[0] = pRotatingObject;
 
-	/*CExplosiveObject* pExplosiveObject = NULL;
-	pExplosiveObject = new CExplosiveObject();
-	pExplosiveObject->SetMesh(pTitleMesh);
-	pExplosiveObject->SetPosition(0, 0, 10.f);
-	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
-	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
-
-	m_ppObjects[0] = pExplosiveObject;
-
-	pExplosiveObject = NULL;
-	pExplosiveObject = new CExplosiveObject();
-	pExplosiveObject->SetMesh(pNameMesh);
-	pExplosiveObject->SetPosition(0, -20, 10.f);
-	pExplosiveObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
-	pExplosiveObject->SetRotationSpeed(10.0f + 3.0f);
-
-	m_ppObjects[1] = pExplosiveObject;*/
-
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
@@ -350,13 +332,6 @@ void CObjectsShader::ReleaseUploadBuffers()
 void CObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	CShader::Render(pd3dCommandList, pCamera);
-	/*for (int j = 0; j < m_nObjects; j++)
-	{
-		if (m_ppObjects[j])
-		{
-			m_ppObjects[j]->Render(pd3dCommandList, pCamera);
-		}
-	}*/
 	for (int j = 0; j < m_nObjects; j++)
 	{
 		if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
@@ -1016,4 +991,33 @@ CGameObject* CS2Shader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,
 		}
 	}
 	return(pSelectedObject);
+}
+void CS2Shader::CheckBulletCollisions(CPlayer* pPlayer)
+{
+	//CTank* pTankPlayer = dynamic_cast<CTank*>(pPlayer);
+	//if (!pTankPlayer) return;
+
+	//for (int i = 0; i < pTankPlayer->GetBulletCount(); ++i)
+	//{
+	//	CBulletObject* pBullet = pTankPlayer->GetBullet(i);
+	//	if (!pBullet || !pBullet->GetActive()) continue;
+
+	//	BoundingOrientedBox bulletBox = pBullet->GetTransformedBoundingBox();
+
+	//	for (int j = 0; j < m_nObjects; ++j)
+	//	{
+	//		CGameObject* pTarget = m_ppObjects[j];
+	//		if (!pTarget || !pTarget->GetActive()) continue;
+
+	//		BoundingOrientedBox targetBox = pTarget->GetTransformedBoundingBox();
+
+	//		if (bulletBox.Intersects(targetBox))
+	//		{
+	//			pBullet->SetActive(false);
+	//			pTarget->SetActive(false);
+
+	//			// 추가 처리 (예: 점수 증가, 효과 등)
+	//		}
+	//	}
+	//}
 }

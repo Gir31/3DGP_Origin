@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Camera.h"
+//#include "Player.h"
 
 //게임 객체의 정보를 셰이더에게 넘겨주기 위한 구조체(상수 버퍼)이다.
 struct CB_GAMEOBJECT_INFO
@@ -84,6 +85,9 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 	virtual CGameObject* PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,
 		XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance);
+
+	CGameObject** GetObject() { return m_ppObjects; }
+	int GetObjectCount() { return m_nObjects; }
 protected:
 	CGameObject** m_ppObjects = NULL;
 	int m_nObjects = 0;
@@ -178,6 +182,7 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 	virtual CGameObject* PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,
 		XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance);
+	void CheckBulletCollisions(CPlayer* pPlayer);
 protected:
 	CGameObject** m_ppObjects = NULL;
 	int m_nObjects = 0;

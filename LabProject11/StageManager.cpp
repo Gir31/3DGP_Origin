@@ -56,9 +56,9 @@ void StageManager::releaseStage()
 	stageArr[currLevel]->ReleaseObjects();
 }
 
-void StageManager::changeStage(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, 
-	ID3D12CommandQueue* pd3dCommandQueue, ID3D12CommandAllocator* pd3dCommandAllocator, 
-	CPlayer* pPlayer, CCamera* pCamera, int level)
+void StageManager::changeStage(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList,
+	ID3D12CommandQueue* pd3dCommandQueue, ID3D12CommandAllocator* pd3dCommandAllocator,
+	CPlayer*& pPlayer, CCamera*& pCamera, int level)
 {
 	if (change) {
 		stageArr[currLevel]->ReleaseObjects();
@@ -80,7 +80,7 @@ void StageManager::changeStage(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 
 		case 1:
 		{
-			CAirplanePlayer * pAirplanePlayer = new CAirplanePlayer(pd3dDevice,
+			CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(pd3dDevice,
 				pd3dCommandList, getCurrStage()->GetGraphicsRootSignature());
 			pPlayer = pAirplanePlayer;
 			pCamera = pPlayer->GetCamera();
@@ -111,9 +111,9 @@ void StageManager::changeStage(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	}
 }
 
-void StageManager::waitTime(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, 
-	ID3D12CommandQueue* pd3dCommandQueue, ID3D12CommandAllocator* pd3dCommandAllocator, 
-	CPlayer* pPlayer, CCamera* pCamera, float fElapsedTime)
+void StageManager::waitTime(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList,
+	ID3D12CommandQueue* pd3dCommandQueue, ID3D12CommandAllocator* pd3dCommandAllocator,
+	CPlayer*& pPlayer, CCamera*& pCamera, float fElapsedTime)
 {
 	elapsedTime += fElapsedTime;
 

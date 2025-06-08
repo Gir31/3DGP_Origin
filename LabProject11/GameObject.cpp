@@ -223,9 +223,9 @@ void CGameObject::UpdateBoundingBox()
 {
 	if (m_pMesh)
 	{
-	/*	m_pMesh->m_xmBoundingBox.Transform(m_xmBoundingBox, XMLoadFloat4x4(&m_xmf4x4World));
-		XMStoreFloat4(&m_xmBoundingBox.Orientation, 
-			XMQuaternionNormalize(XMLoadFloat4(&m_xmBoundingBox.Orientation)));*/
+		/*	m_pMesh->m_xmBoundingBox.Transform(m_xmBoundingBox, XMLoadFloat4x4(&m_xmf4x4World));
+			XMStoreFloat4(&m_xmBoundingBox.Orientation,
+				XMQuaternionNormalize(XMLoadFloat4(&m_xmBoundingBox.Orientation)));*/
 	}
 }
 

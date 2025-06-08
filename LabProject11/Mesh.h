@@ -57,11 +57,13 @@ protected:
 	int							targetStage;
 	bool						beSheild = false;
 public:
+	BoundingOrientedBox	m_xmBoundingBox = BoundingOrientedBox();
+
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 	int CheckRayIntersection(XMFLOAT3& xmRayPosition, XMFLOAT3& xmRayDirection, float* pfNearHitDistance);
 	//인덱스 버퍼를 위한 내용
 	int getTargetStage() { return targetStage; }
-	BoundingOrientedBox	m_xmBoundingBox = BoundingOrientedBox();
+	BoundingOrientedBox GetBoundingBox() { return m_xmBoundingBox; }
 protected:
 	ID3D12Resource* m_pd3dIndexBuffer = NULL;
 	ID3D12Resource* m_pd3dIndexUploadBuffer = NULL;

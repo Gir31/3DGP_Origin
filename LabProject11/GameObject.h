@@ -58,6 +58,8 @@ public:
 	void SetRotationTransform(XMFLOAT4X4* pmxf4x4Transform);
 	void SetMovingDirection(XMFLOAT3& xmf3MovingDirection) { m_xmf3MovingDirection = Vector3::Normalize(xmf3MovingDirection); }
 
+	void SetMovingSpeed(float fSpeed) { m_fMovingSpeed = fSpeed; }
+
 	//게임 객체를 로컬 x-축, y-축, z-축 방향으로 이동한다.
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
@@ -72,7 +74,9 @@ public:
 	void UpdateBoundingBox();
 
 	void SetActive(bool bActive) { m_bActive = bActive; }
+	bool GetActive() { return m_bActive; }
 	int getTargetStage();
+	BoundingOrientedBox GetTransformedBoundingBox() { return (m_pMesh->GetBoundingBox()); }
 };
 
 class CRotatingObject : public CGameObject

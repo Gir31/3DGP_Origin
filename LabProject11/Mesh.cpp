@@ -432,33 +432,33 @@ CCartMesh::CCartMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 
 		// 윗면 (Top) z = z2
 		m_pVertices[v] = CDiffusedVertex(XMFLOAT3(x1, y1, z2), frameColor); // 0
-		m_pVertices[v+1] = CDiffusedVertex(XMFLOAT3(x2, y1, z2), frameColor); // 1
-		m_pVertices[v+2] = CDiffusedVertex(XMFLOAT3(x2, y2, z2), frameColor); // 2
-		m_pVertices[v+3] = CDiffusedVertex(XMFLOAT3(x1, y2, z2), frameColor); // 3
+		m_pVertices[v + 1] = CDiffusedVertex(XMFLOAT3(x2, y1, z2), frameColor); // 1
+		m_pVertices[v + 2] = CDiffusedVertex(XMFLOAT3(x2, y2, z2), frameColor); // 2
+		m_pVertices[v + 3] = CDiffusedVertex(XMFLOAT3(x1, y2, z2), frameColor); // 3
 
 		// 앞면 (Front) y = y1
-		m_pVertices[v+4] = CDiffusedVertex(XMFLOAT3(x2, y1, z2), innerColor); // 4
-		m_pVertices[v+5] = CDiffusedVertex(XMFLOAT3(x1, y1, z2), innerColor); // 5
-		m_pVertices[v+6] = CDiffusedVertex(XMFLOAT3(x1, y1, z1), innerColor); // 6
-		m_pVertices[v+7] = CDiffusedVertex(XMFLOAT3(x2, y1, z1), innerColor); // 7
+		m_pVertices[v + 4] = CDiffusedVertex(XMFLOAT3(x2, y1, z2), innerColor); // 4
+		m_pVertices[v + 5] = CDiffusedVertex(XMFLOAT3(x1, y1, z2), innerColor); // 5
+		m_pVertices[v + 6] = CDiffusedVertex(XMFLOAT3(x1, y1, z1), innerColor); // 6
+		m_pVertices[v + 7] = CDiffusedVertex(XMFLOAT3(x2, y1, z1), innerColor); // 7
 
 		// 뒷면 (Back) y = y2
-		m_pVertices[v+8] = CDiffusedVertex(XMFLOAT3(x1, y2, z2), bodyColor); // 8
-		m_pVertices[v+9] = CDiffusedVertex(XMFLOAT3(x2, y2, z2), bodyColor); // 9
-		m_pVertices[v+10] = CDiffusedVertex(XMFLOAT3(x2, y2, z1), bodyColor); // 10
-		m_pVertices[v+11] = CDiffusedVertex(XMFLOAT3(x1, y2, z1), bodyColor); // 11
+		m_pVertices[v + 8] = CDiffusedVertex(XMFLOAT3(x1, y2, z2), bodyColor); // 8
+		m_pVertices[v + 9] = CDiffusedVertex(XMFLOAT3(x2, y2, z2), bodyColor); // 9
+		m_pVertices[v + 10] = CDiffusedVertex(XMFLOAT3(x2, y2, z1), bodyColor); // 10
+		m_pVertices[v + 11] = CDiffusedVertex(XMFLOAT3(x1, y2, z1), bodyColor); // 11
 
 		// 왼쪽면 (Left) x = x1
-		m_pVertices[v+12] = CDiffusedVertex(XMFLOAT3(x1, y1, z2), bodyColor); // 12
-		m_pVertices[v+13] = CDiffusedVertex(XMFLOAT3(x1, y2, z2), bodyColor); // 13
-		m_pVertices[v+14] = CDiffusedVertex(XMFLOAT3(x1, y2, z1), bodyColor); // 14
-		m_pVertices[v+15] = CDiffusedVertex(XMFLOAT3(x1, y1, z1), bodyColor); // 15
+		m_pVertices[v + 12] = CDiffusedVertex(XMFLOAT3(x1, y1, z2), bodyColor); // 12
+		m_pVertices[v + 13] = CDiffusedVertex(XMFLOAT3(x1, y2, z2), bodyColor); // 13
+		m_pVertices[v + 14] = CDiffusedVertex(XMFLOAT3(x1, y2, z1), bodyColor); // 14
+		m_pVertices[v + 15] = CDiffusedVertex(XMFLOAT3(x1, y1, z1), bodyColor); // 15
 
 		// 오른쪽면 (Right) x = x2
-		m_pVertices[v+16] = CDiffusedVertex(XMFLOAT3(x2, y1, z2), bodyColor); // 16
-		m_pVertices[v+17] = CDiffusedVertex(XMFLOAT3(x2, y1, z1), bodyColor); // 17
-		m_pVertices[v+18] = CDiffusedVertex(XMFLOAT3(x2, y2, z1), bodyColor); // 18
-		m_pVertices[v+19] = CDiffusedVertex(XMFLOAT3(x2, y2, z2), bodyColor); // 19
+		m_pVertices[v + 16] = CDiffusedVertex(XMFLOAT3(x2, y1, z2), bodyColor); // 16
+		m_pVertices[v + 17] = CDiffusedVertex(XMFLOAT3(x2, y1, z1), bodyColor); // 17
+		m_pVertices[v + 18] = CDiffusedVertex(XMFLOAT3(x2, y2, z1), bodyColor); // 18
+		m_pVertices[v + 19] = CDiffusedVertex(XMFLOAT3(x2, y2, z2), bodyColor); // 19
 
 		// 윗면
 		m_pnIndices[idx++] = v; m_pnIndices[idx++] = v + 1; m_pnIndices[idx++] = v + 2;

@@ -11,9 +11,9 @@ class CPlayer : public CGameObject
 protected:
 	//플레이어의 위치 벡터, x-축(Right), y-축(Up), z-축(Look) 벡터이다.
 	XMFLOAT3 m_xmf3Position;
-		XMFLOAT3 m_xmf3Right;
-		XMFLOAT3 m_xmf3Up;
-		XMFLOAT3 m_xmf3Look;
+	XMFLOAT3 m_xmf3Right;
+	XMFLOAT3 m_xmf3Up;
+	XMFLOAT3 m_xmf3Look;
 
 	//플레이어가 로컬 x-축(Right), y-축(Up), z-축(Look)으로 얼마만큼 회전했는가를 나타낸다.
 	float m_fPitch;
@@ -122,7 +122,7 @@ public:
 	virtual void OnPrepareRender();
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 
-	bool getFlag() { return eFlag;  };
+	bool getFlag() { return eFlag; };
 
 	bool eFlag = false;
 };
@@ -161,6 +161,14 @@ public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 
 	virtual void FireBullet(CGameObject* pLockedObject);
+
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera =
+		NULL);
+	virtual void Update(float fElapsedTime);
+
+	void CheckBulletCollision(CGameObject** ppEnemies, int nEnemies);
+	CBulletObject* GetBullet(int num) { return m_ppBullets[num]; }
+	int GetBulletCount() { return BULLETS; }
 private:
 	bool m_bIsMoving = false;
 };

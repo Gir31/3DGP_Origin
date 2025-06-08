@@ -494,13 +494,25 @@ void CGameFramework::ProcessInput()
 void CGameFramework::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
-	
-	if (manager->getCurrStage()) manager->getCurrStage()->AnimateObjects(m_GameTimer.GetTimeElapsed());
+
+	if (manager->getCurrStage()) {
+		manager->getCurrStage()->AnimateObjects(m_GameTimer.GetTimeElapsed());
+
+		if (manager->getCurrLevel() == 3) {
+			// StageManager 또는 Main 루프 안에서, 매 프레임 충돌 검사 호출
+			CS2Shader* pCS2Shader = dynamic_cast<CS2Shader*>(manager->getCurrStage()->GetShader());
+			if (pCS2Shader && m_pPlayer) {
+				pCS2Shader->CheckBulletCollisions(m_pPlayer);
+			}
+
+		}
+	}
 	if (manager->getReady()) {
-		manager->waitTime(m_pd3dDevice, m_pd3dCommandList, m_pd3dCommandQueue, m_pd3dCommandAllocator, 
-			m_pPlayer, m_pCamera,fTimeElapsed);
+		manager->waitTime(m_pd3dDevice, m_pd3dCommandList, m_pd3dCommandQueue, m_pd3dCommandAllocator,
+			m_pPlayer, m_pCamera, fTimeElapsed);
 		if (manager->getChange()) {
 			WaitForGpuComplete();
+			if (manager->getCurrStage()) manager->getCurrStage()->ReleaseUploadBuffers();
 			manager->setChange(false);
 		}
 	}

@@ -36,7 +36,7 @@ void CPlayer::ReleaseShaderVariables()
 	CGameObject::ReleaseShaderVariables();
 	if (m_pCamera) m_pCamera->ReleaseShaderVariables();
 }
-void CPlayer::UpdateShaderVariables(ID3D12GraphicsCommandList * pd3dCommandList)
+void CPlayer::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	CGameObject::UpdateShaderVariables(pd3dCommandList);
 }
@@ -48,11 +48,11 @@ void CPlayer::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
 	if (dwDirection)
 	{
 		XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-		//화살표 키 ‘↑’를 누르면 로컬 z-축 방향으로 이동(전진)한다. ‘↓’를 누르면 반대 방향으로 이동한다.
+
 		if (dwDirection & DIR_FORWARD) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look,
 			fDistance);
 		if (dwDirection & DIR_BACKWARD) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -fDistance);
-		//화살표 키 ‘→’를 누르면 로컬 x-축 방향으로 이동한다. ‘←’를 누르면 반대 방향으로 이동한다.
+
 		if (dwDirection & DIR_RIGHT) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Right,
 			fDistance);
 		if (dwDirection & DIR_LEFT) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Right, -fDistance);
@@ -226,12 +226,7 @@ CCamera* CPlayer::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
 		pNewCamera = new CSpaceShipCamera(m_pCamera);
 		break;
 	}
-	//현재 카메라의 모드가 스페이스-쉽 모드의 카메라이고 새로운 카메라가 1인칭 또는 3인칭 카메라이면 플레이어의
-   //Up 벡터를 월드좌표계의 y-축 방향 벡터(0, 1, 0)이 되도록 한다. 즉, 똑바로 서도록 한다. 그리고 스페이스-쉽 카메
-   //라의 경우 플레이어의 이동에는 제약이 없다. 특히, y-축 방향의 움직임이 자유롭다. 그러므로 플레이어의 위치는 공
-   //중(위치 벡터의 y-좌표가 0보다 크다)이 될 수 있다. 이때 새로운 카메라가 1인칭 또는 3인칭 카메라이면 플레이어의
-   //위치는 지면이 되어야 한다. 그러므로 플레이어의 Right 벡터와 Look 벡터의 y 값을 0으로 만든다. 이제 플레이어의
-   //Right 벡터와 Look 벡터는 단위벡터가 아니므로 정규화한다.
+
 	if (nCurrentCameraMode == SPACESHIP_CAMERA)
 	{
 		m_xmf3Right = Vector3::Normalize(XMFLOAT3(m_xmf3Right.x, 0.0f, m_xmf3Right.z));
@@ -610,6 +605,15 @@ CTank::CTank(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
 	CTankBodyMesh* pTankBodyMesh = new CTankBodyMesh(pd3dDevice, pd3dCommandList);
 	SetMesh(pTankBodyMesh);
 
+	CCubeMeshDiffused* pBulletMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 0.5f, 2.0f, 0.5f);
+	for (int i = 0; i < BULLETS; ++i)
+	{
+		m_ppBullets[i] = new CBulletObject(m_fBulletEffectiveRange);
+		m_ppBullets[i]->SetMesh(pBulletMesh);
+		m_ppBullets[i]->SetActive(false);
+		m_ppBullets[i]->SetMovingSpeed(100.f);
+	}
+
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -710,6 +714,10 @@ void CTank::FireBullet(CGameObject* pLockedObject)
 		pBullet->SetMovingDirection(fireDir);
 		pBullet->SetActive(true);
 
+		char buf[128];
+		sprintf_s(buf, "fireDir: %.2f %.2f %.2f\n", fireDir.x, fireDir.y, fireDir.z);
+		OutputDebugStringA(buf);
+
 		if (pLockedObject)
 		{
 			pBullet->m_pLockedObject = pLockedObject;
@@ -717,4 +725,58 @@ void CTank::FireBullet(CGameObject* pLockedObject)
 
 	}
 
+}
+
+void CTank::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	CGameObject::Render(pd3dCommandList, pCamera);
+
+	for (int i = 0; i < BULLETS; ++i)
+	{
+		if (m_ppBullets[i]->m_bActive)
+		{
+			m_ppBullets[i]->Render(pd3dCommandList, pCamera);
+		}
+	}
+}
+
+void CTank::Update(float fElapsedTime)
+{
+
+	CPlayer::Update(fElapsedTime);
+
+	for (int i = 0; i < BULLETS; ++i) {
+		if (m_ppBullets[i]->m_bActive) {
+			m_ppBullets[i]->Animate(fElapsedTime);
+		}
+	}
+}
+
+void CTank::CheckBulletCollision(CGameObject** ppEnemies, int nEnemies)
+{
+	for (int i = 0; i < BULLETS; ++i)
+	{
+		CBulletObject* pBullet = m_ppBullets[i];
+		if (!pBullet->m_bActive) continue;
+
+		// 총알의 바운딩 박스를 월드좌표계로 변환
+		BoundingOrientedBox bulletBox = pBullet->m_pMesh->GetBoundingBox();
+		bulletBox.Transform(bulletBox, XMLoadFloat4x4(&pBullet->m_xmf4x4World));
+
+		for (int j = 0; j < nEnemies; ++j)
+		{
+			CGameObject* pEnemy = ppEnemies[j];
+			if (!pEnemy->m_bActive) continue;
+
+			BoundingOrientedBox enemyBox = pEnemy->m_pMesh->GetBoundingBox();
+			enemyBox.Transform(enemyBox, XMLoadFloat4x4(&pEnemy->m_xmf4x4World));
+
+			if (bulletBox.Intersects(enemyBox))
+			{
+				pBullet->Reset();
+				pEnemy->SetActive(false);
+				OutputDebugStringA("충돌 감지!\n");
+			}
+		}
+	}
 }
